@@ -1,0 +1,17 @@
+00000000  65C606000032      mov byte [gs:0x0],0x32
+00000006  65C6060100A4      mov byte [gs:0x1],0xa4
+0000000C  65C606020020      mov byte [gs:0x2],0x20
+00000012  65C6060300A4      mov byte [gs:0x3],0xa4
+00000018  65C60604004C      mov byte [gs:0x4],0x4c
+0000001E  65C6060500A4      mov byte [gs:0x5],0xa4
+00000024  65C60606004F      mov byte [gs:0x6],0x4f
+0000002A  65C6060700A4      mov byte [gs:0x7],0xa4
+00000030  65C606080041      mov byte [gs:0x8],0x41
+00000036  65C6060900A4      mov byte [gs:0x9],0xa4
+0000003C  65C6060A0044      mov byte [gs:0xa],0x44
+00000042  65C6060B00A4      mov byte [gs:0xb],0xa4
+00000048  65C6060C0045      mov byte [gs:0xc],0x45
+0000004E  65C6060D00A4      mov byte [gs:0xd],0xa4
+00000054  65C6060E0052      mov byte [gs:0xe],0x52
+0000005A  65C6060F00A4      mov byte [gs:0xf],0xa4
+00000060  EBFE              jmp short 0x60
