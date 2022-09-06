@@ -1,20 +1,26 @@
+build_dir := build
+bochsPath := /home/yujt/software/bochs
+
+.PHONY: all
+all: build install
+
 .PHONY:build
 build:
-	nasm -I boot/include boot/mbr.S -o boot/mbr.bin
-	nasm -I boot/include boot/loader.S -o boot/loader.bin
-
-bochsPath = /home/yujt/software/bochs
+	mkdir -p $(build_dir)
+	nasm -I boot/include boot/mbr.S -o $(build_dir)/mbr.bin
+	nasm -I boot/include boot/loader.S -o $(build_dir)/loader.bin
+	@echo "build success!"
 
 .PHONY:install
 install:
 	dd if=/dev/zero of=$(bochsPath)/hd60M.img bs=512 count=200 conv=notrunc
-	dd if=boot/mbr.bin of=$(bochsPath)/hd60M.img bs=512 count=1 conv=notrunc
-	dd if=boot/loader.bin of=$(bochsPath)/hd60M.img bs=512 count=4 seek=2 conv=notrunc
-	@echo "install into disk success"
+	dd if=$(build_dir)/mbr.bin of=$(bochsPath)/hd60M.img bs=512 count=1 conv=notrunc
+	dd if=$(build_dir)/loader.bin of=$(bochsPath)/hd60M.img bs=512 count=4 seek=2 conv=notrunc
+	@echo "install into disk success!"
 
 .PHONY:clean
 clean:
-	$(RM) boot/mbr.bin boot/loader.bin
+	$(RM) -r $(build_dir)
 
 .PHONY:qemu
 qemu:

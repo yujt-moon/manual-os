@@ -1,24 +1,30 @@
+build_dir := build
+bochs_path := /home/yujt/software/bochs
+_entry := 0xc0001500
+
+.PHONY: all
+all: build install
+
 .PHONY:build
 build:
-	nasm -I boot/include boot/mbr.S -o boot/mbr.bin
-	nasm -I boot/include boot/loader.S -o boot/loader.bin
-	gcc -c -m32 -o kernel/main.o kernel/main.c && \
-	ld -m elf_i386 kernel/main.o -Ttext 0xc0001500 -e main -o kernel/kernel.bin
-
-bochsPath = /home/yujt/software/bochs
+	mkdir -p $(build_dir)
+	nasm -I boot/include boot/mbr.S -o $(build_dir)/mbr.bin
+	nasm -I boot/include boot/loader.S -o $(build_dir)/loader.bin
+	gcc -c -m32 -o $(build_dir)/main.o kernel/main.c && \
+	ld -m elf_i386 $(build_dir)/main.o -Ttext $(_entry) -e main -o $(build_dir)/kernel.bin
 
 .PHONY:install
 install:
-	dd if=/dev/zero of=$(bochsPath)/hd60M.img bs=512 count=300 conv=notrunc
-	dd if=boot/mbr.bin of=$(bochsPath)/hd60M.img bs=512 count=1 conv=notrunc
-	dd if=boot/loader.bin of=$(bochsPath)/hd60M.img bs=512 count=4 seek=2 conv=notrunc
-	dd if=kernel/kernel.bin of=$(bochsPath)/hd60M.img bs=512 count=200 seek=9 conv=notrunc
+	dd if=/dev/zero of=$(bochs_path)/hd60M.img bs=512 count=300 conv=notrunc
+	dd if=$(build_dir)/mbr.bin of=$(bochs_path)/hd60M.img bs=512 count=1 conv=notrunc
+	dd if=$(build_dir)/loader.bin of=$(bochs_path)/hd60M.img bs=512 count=4 seek=2 conv=notrunc
+	dd if=$(build_dir)/kernel.bin of=$(bochs_path)/hd60M.img bs=512 count=200 seek=9 conv=notrunc
 	@echo "install into disk success"
 
 .PHONY:clean
 clean:
-	$(RM) boot/mbr.bin boot/loader.bin kernel/main.o kernel/kernel.bin
+	$(RM) -r $(build_dir)
 
 .PHONY:qemu
 qemu:
-	qemu-system-i386 -hda $(bochsPath)/hd60M.img -boot c # -serial stdio
+	qemu-system-i386 -hda $(bochs_path)/hd60M.img -boot c # -serial stdio
